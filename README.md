@@ -70,7 +70,9 @@ seguinte sintaxe: ```<trip-country>-<trip-city>-<date>-<6-digit-random-number>``
 ### Execução local
 
 #### Realizando uma requisição na função localmente através do API Gateway
-1. Iniciar o DynamoDB localmente com Docker. `docker run -p 8000:8000 -v $(pwd)/local/dynamodb:/data/ amazon/dynamodb-local -jar DynamoDBLocal.jar -sharedDb -dbPath /data`
+1. Iniciar o DynamoDB localmente com Docker. 
+- Linux ou MacOs: `docker run -p 8000:8000 -v $(pwd)/local/dynamodb:/data/ amazon/dynamodb-local -jar DynamoDBLocal.jar -sharedDb -dbPath /data`
+- Windows (Powershell): `docker run -p 8000:8000 -v $pwd\local\dynamodb:\data\ amazon\dynamodb-local -jar DynamoDBLocal.jar -sharedDb -dbPath \data`
 
 2. Realizar a criação da tabela no DynamoDB. `aws dynamodb create-table --table-name trips --attribute-definitions AttributeName=id,AttributeType=S AttributeName=dateTimeCreation,AttributeType=S --key-schema AttributeName=id,KeyType=HASH AttributeName=dateTimeCreation,KeyType=RANGE --billing-mode PAY_PER_REQUEST --endpoint-url http://localhost:8000`
     
@@ -78,7 +80,7 @@ seguinte sintaxe: ```<trip-country>-<trip-city>-<date>-<6-digit-random-number>``
 
 3. Para iniciar o AWS SAM API localmente, informe o comando, conforme o seu sistema operacional:
  - MacOS: `sam local start-api --env-vars src/test/resources/test_environment_mac.json`
- - Windows: `sam local start-api --env-vars src/test/resources/test_environment_windows.json`
+ - Windows: `sam local start-api --env-vars src\test\resources\test_environment_windows.json`
  - Linux: `sam local start-api --env-vars src/test/resources/test_environment_linux.json`
 
 ## Deploy
@@ -86,24 +88,45 @@ seguinte sintaxe: ```<trip-country>-<trip-city>-<date>-<6-digit-random-number>``
 Será necessária a utilização de um bucket do S3 para armazenamento do código fonte que será entrgeue no serviço AWS Lambda.
 
 Para realizar a criação, informe o seguinte comando no terminal:
+- Linux ou MacOs:
 ```bash
 export BUCKET_NAME=trips_bucket_334242
 aws s3 mb s3://$BUCKET_NAME
 ```
+- Windows (usando PowerShell):
+``` 
+$env:BUCKET_NAME="trips_bucket_334242"
+aws s3 mb s3://$env:BUCKET_NAME    
+```
+      
 Observação: Caso já exista um bucket com o mesmo nome criado, altere os últimos seis número por um número aleatório de sua preferência.
 
 Em seguida, gere o pacote dos fontes e realize o upload para o S3:
-
+- Linux ou MacOs:
 ```bash
 sam package \
     --template-file template.yaml \
     --output-template-file packaged.yaml \
     --s3-bucket $BUCKET_NAME
 ```
+- Windows (usando PowerShell):
+```
+sam package \
+    --template-file template.yaml \
+    --output-template-file packaged.yaml \
+    --s3-bucket $env:BUCKET_NAME
+```
 
-Por fim, o seguinte comando criará a satack do Cloudformation e fará a entrega utilizando o SAM.
-
+Por fim, o seguinte comando criará a stack do Cloudformation e fará a entrega utilizando o SAM.
+- Linux ou MacOs:
 ```bash
+sam deploy \
+    --template-file packaged.yaml \
+    --stack-name serverless-trip \
+    --capabilities CAPABILITY_IAM
+```
+- Windows (usando PowerShell):
+```
 sam deploy \
     --template-file packaged.yaml \
     --stack-name serverless-trip \
@@ -111,7 +134,14 @@ sam deploy \
 ```
 
 Adicionalmente após a entrega ter siso concluída com sucesso execute o seguinte comando para obter o endpoint do API Gateway:
+- Linux ou MacOs:
 ```bash
+aws cloudformation describe-stacks \
+    --stack-name sam-tripsHandler \
+    --query 'Stacks[].Outputs'
+```
+- Windows (usando PowerShell):
+```
 aws cloudformation describe-stacks \
     --stack-name sam-tripsHandler \
     --query 'Stacks[].Outputs'
