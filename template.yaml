@@ -1,0 +1,99 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    serverless-trip
+
+    Rest API to manage the creation of repositories for trips photos
+
+Globals:
+    Function:
+        Timeout: 20
+        MemorySize: 512
+        Environment:
+          Variables:
+            TABLE_NAME: !Ref TripTable
+            ENDPOINT_OVERRIDE: ""
+
+Resources:
+
+  CreateTripRecordFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+     CodeUri: target/serverless-trip-1.0.0-SNAPSHOT-jar-with-dependencies.jar
+     Handler: br.com.fiap.handler.CreateTripRecord::handleRequest
+     Runtime: java8
+     Policies:
+       - DynamoDBCrudPolicy:
+           TableName: !Ref TripTable
+     Events:
+       CreateTripRecord:
+         Type: Api
+         Properties:
+           Path: /trips
+           Method: post
+           
+  GetTripRecordByPeriodFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+     CodeUri: target/serverless-trip-1.0.0-SNAPSHOT-jar-with-dependencies.jar
+     Handler: br.com.fiap.handler.GetTripRecordByPeriod::handleRequest
+     Runtime: java8
+     Policies:
+       - DynamoDBCrudPolicy:
+           TableName: !Ref TripTable
+     Events:
+       GetTripRecordByPeriod:
+         Type: Api
+         Properties:
+           Path: /trips
+           Method: get
+           RequestParameters:
+              - method.request.querystring.start
+              - method.request.querystring.end
+
+  GetTripRecordByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+     CodeUri: target/serverless-trip-1.0.0-SNAPSHOT-jar-with-dependencies.jar
+     Handler: br.com.fiap.handler.GetTripRecordById::handleRequest
+     Runtime: java8
+     Policies:
+       - DynamoDBCrudPolicy:
+           TableName: !Ref TripTable
+     Events:
+       GetTripRecordById:
+         Type: Api
+         Properties:
+           Path: /trips/{id}
+           Method: get
+
+  TripTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: trips
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: dateTimeCreation
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: dateTimeCreation
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+
+Outputs:
+
+    CreateTripRecordFunction:
+      Description: "CreateTripRecord Lambda Function ARN"
+      Value: !GetAtt CreateTripRecordFunction.Arn
+      
+    GetTripRecordsByPeriodFunction:
+      Description: "GetTripRecordsByPeriod Lambda Function ARN"
+      Value: !GetAtt GetTripRecordsByPeriodFunction.Arn
+      
+    GetTripRecordByIdFunction:
+      Description: "GetTripRecordById Lambda Function ARN"
+      Value: !GetAtt GetTripRecordByIdFunction.Arn
+     

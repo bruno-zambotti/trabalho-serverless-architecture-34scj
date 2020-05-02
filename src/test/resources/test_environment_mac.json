@@ -1,0 +1,14 @@
+{
+	"CreateTripRecordFunction": {
+		"ENDPOINT_OVERRIDE": "http://docker.for.mac.localhost:8000",
+		"TABLE_NAME": "trips"
+	},
+	"GetTripRecordsByPeriodFunction": {
+		"ENDPOINT_OVERRIDE": "http://docker.for.mac.localhost:8000",
+		"TABLE_NAME": "trips"
+	},
+	"GetTripRecordByIdFunction": {
+		"ENDPOINT_OVERRIDE": "http://docker.for.mac.localhost:8000",
+		"TABLE_NAME": "trips"
+	}
+}

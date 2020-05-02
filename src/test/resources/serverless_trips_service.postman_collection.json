@@ -1,0 +1,89 @@
+{
+	"info": {
+		"_postman_id": "95e33dfe-ac5d-4d9c-8314-1f841f7a587e",
+		"name": "serverless_trips_service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "findByPeriod",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/trips?start=2020-05-01&end=2020-05-05",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"trips"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "2020-05-01"
+						},
+						{
+							"key": "end",
+							"value": "2020-05-05"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createTripRecord",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": \"1\",\n\t\"dateTimeCreation\": \"2020-05-01\",\n\t\"country\": \"BRAZIL\",\n\t\"city\": \"SAO PAULO\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/trips",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"trips"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/trips/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"trips",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

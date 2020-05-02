@@ -1,0 +1,66 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'serverless-trip - Rest API to manage the creation of repositories for trips photos'
+Globals:
+  Function:
+    MemorySize: 512
+    Timeout: 20
+Outputs:
+  CreateTripRecordFunction:
+    Description: CreateTripRecord Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - CreateTripRecordFunction
+      - Arn
+  GetTripRecordByIdFunction:
+    Description: GetTripRecordById Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - GetTripRecordByIdFunction
+      - Arn
+  GetTripsRecordsByPeriodFunction:
+    Description: GetTripsRecordsByPeriod Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - GetTripsRecordsByPeriodFunction
+      - Arn
+Resources:
+  CreateTripRecordFunction:
+    Properties:
+      CodeUri: s3://aws-sam-fiap-deployt/896a140ec24d1c84f917b82d6bdddd3f
+      Events:
+        CreateTripRecord:
+          Properties:
+            Method: post
+            Path: /trips
+          Type: Api
+      Handler: br.com.fiap.handler.CreateTripRecord::handleRequest
+      Runtime: java8
+    Type: AWS::Serverless::Function
+  GetTripRecordByIdFunction:
+    Properties:
+      CodeUri: s3://aws-sam-fiap-deployt/896a140ec24d1c84f917b82d6bdddd3f
+      Events:
+        GetTripRecordById:
+          Properties:
+            Method: get
+            Path: /trips/{id}
+          Type: Api
+      Handler: br.com.fiap.handler.GetTripRecordById::handleRequest
+      Runtime: java8
+    Type: AWS::Serverless::Function
+  GetTripRecordsByPeriodFunction:
+    Properties:
+      CodeUri: s3://aws-sam-fiap-deployt/896a140ec24d1c84f917b82d6bdddd3f
+      Events:
+        GetTripRecordsByPeriod:
+          Properties:
+            Method: get
+            Path: /trips
+            RequestParameters:
+            - method.request.querystring.start
+            - method.request.querystring.end
+          Type: Api
+      Handler: br.com.fiap.handler.GetTripRecordsByPeriod::handleRequest
+      Runtime: java8
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31
