@@ -8,6 +8,8 @@
 ## Tecnologias e ferramentas utilizadas
 - [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) - Para compilar e executar os códigos descritos nesta aplicação.
 - [Maven](https://maven.apache.org/install.html) - Para gerenciamento das dependências da aplicação.
+- [Python 3](https://www.python.org/downloads/) - Para permitir a execução dos comando do AWS CLI.
+- [AWS CLI](https://docs.aws.amazon.com/pt_br/cli/latest/userguide/install-cliv1.html) - Pra disponibilizar os comandos necessários para criação dos serviços utilizados.
 - [AWS SAM (Serverless Application Model)](https://github.com/awslabs/aws-sam-cli) - Pra prover a infraestrutura da aplicação como código.
 - [Docker](https://www.docker.com/community-edition) - Para execução da aplicação localmente.
 - [Amazon API Gateway](https://aws.amazon.com/api-gateway) - Para gerenciar as requisições a aplicação.
@@ -65,11 +67,12 @@ seguinte sintaxe: ```<trip-country>-<trip-city>-<date>-<6-digit-random-number>``
 - Consultar as informações de uma viagem
 ```(GET -> /trips/{id})```
 
-## Execução local, empacotamento e entrega
+## Execução local em computador pessoal
 
-### Execução local
+### Configuração do ambiente
+Deverá ser realizada conforme o sistema operacional utilizado, para mais informações sobre cada ambiente, acesse os links disponíveis em [tecnologias e ferramentas utilizadas](#Tecnologias e ferramentas utilizadas) no início deste documento.                                                                                                                  
 
-#### Realizando uma requisição na função localmente através do API Gateway
+### Subindo o banco de dados e a aplicação
 1. Iniciar o DynamoDB localmente com Docker. 
 - Linux ou MacOs: `docker run -p 8000:8000 -v $(pwd)/local/dynamodb:/data/ amazon/dynamodb-local -jar DynamoDBLocal.jar -sharedDb -dbPath /data`
 - Windows (Powershell): `docker run -p 8000:8000 -v $pwd\local\dynamodb:\data\ amazon\dynamodb-local -jar DynamoDBLocal.jar -sharedDb -dbPath \data`
@@ -83,6 +86,87 @@ seguinte sintaxe: ```<trip-country>-<trip-city>-<date>-<6-digit-random-number>``
  - Windows: `sam local start-api --env-vars src\test\resources\test_environment_windows.json`
  - Linux: `sam local start-api --env-vars src/test/resources/test_environment_linux.json`
 
+4. Para realizar requisições a função localmente através do API Gateway utilize a collection, para mais informações sobre como utilizar o Postman acesse [testando a aplicação via Postman](#Testando a aplicação via Postman).
+
+## Execução local utilizando o Cloud9
+
+Abaixo é representado o passo a passo para configuração e execução utilizando o Cloud9:
+
+### Configuração do ambiente
+
+Algumas observações:
+- Java 8 já vem instalado
+- Docker já vem instalado
+
+#### Instalando o pip3
+`curl -O https://bootstrap.pypa.io/get-pip.py`
+
+`python3 get-pip.py --user`
+
+`pip3 --version`
+
+#### Instalando AWS CLI
+`pip3 install awscli --upgrade --user`
+
+#### Instalando AWS SAM
+`sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"`
+
+`test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv)`
+
+`test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)`
+
+`test -r ~/.bash_profile && echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.bash_profile`
+
+`echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile`
+
+`brew tap aws/tap`
+
+`brew install aws-sam-cli`
+
+`sam --version`
+
+#### Instalando o Maven
+`sudo apt install maven`
+
+### Subindo o banco de dados e a aplicação
+1. Iniciar o DynamoDB localmente com Docker. 
+`docker run -p 8000:8000 -v $(pwd)/local/dynamodb:/data/ amazon/dynamodb-local -jar DynamoDBLocal.jar -sharedDb -dbPath /data`
+
+2. Permitindo o acesso aos diretórios que serão utilizados para subir o dynamodb:
+`sudo chmod -R 777 local`
+
+2. Realizar a criação da tabela no DynamoDB. `aws dynamodb create-table --table-name trips --attribute-definitions AttributeName=id,AttributeType=S AttributeName=dateTimeCreation,AttributeType=S --key-schema AttributeName=id,KeyType=HASH AttributeName=dateTimeCreation,KeyType=RANGE --billing-mode PAY_PER_REQUEST --endpoint-url http://localhost:8000`
+    
+    2.1. Caso a tabela já exista, é possível exclui-la com o seguinte comando: `aws dynamodb delete-table --table-name trips --endpoint-url http://localhost:8000`
+
+3. Realize o clone deste repositório:
+`git clone https://github.com/bruno-zambotti/trabalho-serverless-architecture-34scj.git`
+
+4. Acesse a raiz do projeto:
+`cd serverless-trip`
+
+5. Para iniciar o AWS SAM API localmente, informe o comando, conforme o seu sistema operacional:
+`sam local start-api --env-vars src/test/resources/test_environment_linux.json`
+
+6. Para realizar requisições a função localmente através do API Gateway utilize os exemplos de comandos abaixo:
+
+- Criação de uma viagem:
+>`curl --location --request POST 'http://localhost:3000/trips' \
+ --header 'Content-Type: application/json' \
+ --header 'Content-Type: text/plain' \
+ --data-raw '{
+ 	"id": "1",
+ 	"dateTimeCreation": "2020-05-01",
+ 	"country": "BRAZIL",
+ 	"city": "SAO PAULO"
+ }'`
+
+- Consulta de uma viagem por id:
+>`curl --location --request GET 'http://localhost:3000/trips/1'`
+
+- Consulta de viagens por período:
+>`curl --location --request GET 'http://localhost:3000/trips?start=2020-05-01&end=2020-05-05'`
+
 ## Deploy
 
 Será necessária a utilização de um bucket do S3 para armazenamento do código fonte que será entrgeue no serviço AWS Lambda.
@@ -95,7 +179,7 @@ aws s3 mb s3://$BUCKET_NAME
 ```
 - Windows (usando PowerShell):
 ``` 
-$env:BUCKET_NAME="trips_bucket_334242"
+$env:BUCKET_NAME="trips-bucket-334242"
 aws s3 mb s3://$env:BUCKET_NAME    
 ```
       
@@ -146,6 +230,26 @@ aws cloudformation describe-stacks \
     --stack-name sam-tripsHandler \
     --query 'Stacks[].Outputs'
 ```
+
+## Outras informações
+
+### Testando a aplicação via Postman:
+Para testar os métodos da aplicação via Postman siga os passos a seguir:
+1. Realize a instalação do [programa](https://www.getpostman.com/downloads/).
+2. Após a instalação abra o aplicativo.
+3. Após o aplicativo abrir, siga as seguintes instruções:
+
+    3.1. Clique em **File** no menu de opções.
+  
+    3.2. Em seguida clique em **Import**.
+  
+    3.3. Tenha certeza de que a aba **Import File** está selecionada na janela que abrir, caso não esteja selecione-a.
+  
+    3.4. Clique no botão **Choose Files** na janela que será aberta.
+  
+    3.5. Por fim, escolha o arquivo [***"serverless_trips_service.postman_collection.json"***](../src/test/resources/serverless_trips_service.postman_collection.json).
+
+4. Após realizar a configuração descrita é só subir a aplicação e realizar as chamadas desejadas.
 
 ## Links:
 
