@@ -5,7 +5,7 @@
 
 **Descrição:** Projeto do trabalho final da disciplina de Serverless Architecture da turma 34SCJ da FIAP.
 
-## Tecnologias e ferramentas utilizadas
+## Tecnologias e ferramentas utilizadas 
 - [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) - Para compilar e executar os códigos descritos nesta aplicação.
 - [Maven](https://maven.apache.org/install.html) - Para gerenciamento das dependências da aplicação.
 - [Python 3](https://www.python.org/downloads/) - Para permitir a execução dos comando do AWS CLI.
@@ -70,7 +70,7 @@ seguinte sintaxe: ```<trip-country>-<trip-city>-<date>-<6-digit-random-number>``
 ## Execução local em computador pessoal
 
 ### Configuração do ambiente
-Deverá ser realizada conforme o sistema operacional utilizado, para mais informações sobre cada ambiente, acesse os links disponíveis em [tecnologias e ferramentas utilizadas](#Tecnologias e ferramentas utilizadas) no início deste documento.                                                                                                                  
+Deverá ser realizada conforme o sistema operacional utilizado, para mais informações sobre cada ambiente, acesse os links disponíveis em [tecnologias e ferramentas utilizadas](#Tecnologias-e-ferramentas-utilizadas) no início deste documento.                                                                                                                  
 
 ### Subindo o banco de dados e a aplicação
 1. Iniciar o DynamoDB localmente com Docker. 
@@ -86,7 +86,7 @@ Deverá ser realizada conforme o sistema operacional utilizado, para mais inform
  - Windows: `sam local start-api --env-vars src\test\resources\test_environment_windows.json`
  - Linux: `sam local start-api --env-vars src/test/resources/test_environment_linux.json`
 
-4. Para realizar requisições a função localmente através do API Gateway utilize a collection, para mais informações sobre como utilizar o Postman acesse [testando a aplicação via Postman](#Testando a aplicação via Postman).
+4. Para realizar requisições a função localmente através do API Gateway utilize a collection, para mais informações sobre como utilizar o Postman acesse [testando a aplicação via Postman](#Testando-a-aplicação-via-Postman).
 
 ## Execução local utilizando o Cloud9
 
@@ -247,7 +247,7 @@ Para testar os métodos da aplicação via Postman siga os passos a seguir:
   
     3.4. Clique no botão **Choose Files** na janela que será aberta.
   
-    3.5. Por fim, escolha o arquivo [***"serverless_trips_service.postman_collection.json"***](../src/test/resources/serverless_trips_service.postman_collection.json).
+    3.5. Por fim, escolha o arquivo [***"serverless_trips_service.postman_collection.json"***](../blob/master/src/test/resources/serverless_trips_service.postman_collection.json).
 
 4. Após realizar a configuração descrita é só subir a aplicação e realizar as chamadas desejadas.
 
