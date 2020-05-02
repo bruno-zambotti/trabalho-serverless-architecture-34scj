@@ -247,7 +247,7 @@ Para testar os métodos da aplicação via Postman siga os passos a seguir:
   
     3.4. Clique no botão **Choose Files** na janela que será aberta.
   
-    3.5. Por fim, escolha o arquivo [***"serverless_trips_service.postman_collection.json"***](../blob/master/src/test/resources/serverless_trips_service.postman_collection.json).
+    3.5. Por fim, escolha o arquivo [***"serverless_trips_service.postman_collection.json"***](../master/src/test/resources/serverless_trips_service.postman_collection.json).
 
 4. Após realizar a configuração descrita é só subir a aplicação e realizar as chamadas desejadas.
 
