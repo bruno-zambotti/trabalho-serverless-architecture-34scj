@@ -182,7 +182,7 @@ Será necessária a utilização de um bucket do S3 para armazenamento do códig
 Para realizar a criação, informe o seguinte comando no terminal:
 - Linux ou MacOs:
 ```bash
-export BUCKET_NAME=trips_bucket_334242
+export BUCKET_NAME=trips-bucket-334242
 aws s3 mb s3://$BUCKET_NAME
 ```
 - Windows (usando PowerShell):
@@ -210,7 +210,6 @@ sam package \
 ```
 
 Por fim, o seguinte comando criará a stack do Cloudformation e fará a entrega utilizando o SAM.
-- Linux ou MacOs:
 ```bash
 sam deploy \
     --template-file packaged.yaml \
