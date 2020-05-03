@@ -18,10 +18,10 @@ public class TripService {
 
     public Trip createTripRecord(Trip trip){
         String bucketName = String.format(bucketNamePattern,
-                trip.getCountry().toLowerCase(),
-                trip.getCity().toLowerCase(),
+                getValue(trip.getCountry()),
+                getValue(trip.getCity()),
                 LocalDate.now().format(formatter),
-                100000 + new Random().nextInt(900000));
+                getARandomNumber());
 
         trip.setUrl(String.format(bucketUrlPattern, getS3BucketName(bucketName)));
 
@@ -44,5 +44,13 @@ public class TripService {
 
     public List<Trip> getTripRecordById(String id){
         return this.repository.findById(id);
+    }
+
+    private String getValue(String value){
+        return value.toLowerCase().replace(" ", "");
+    }
+
+    private int getARandomNumber() {
+        return 100000 + new Random().nextInt(900000);
     }
 }
