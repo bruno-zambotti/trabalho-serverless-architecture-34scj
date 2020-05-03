@@ -13,6 +13,7 @@ Globals:
           Variables:
             TABLE_NAME: !Ref TripTable
             ENDPOINT_OVERRIDE: ""
+            LOCAL_ENVIRONMENT: ""
 
 Resources:
 

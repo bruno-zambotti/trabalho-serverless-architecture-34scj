@@ -14,19 +14,28 @@ public class TripService {
     private final TripRepository repository = new TripRepository();
     private static final String bucketNamePattern = "%s-%s-%s-%s";
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-    private static final String bucketUrlPattern = "https://%s.s3.amazon.aws.com";
+    private static final String bucketUrlPattern = "https://%s.s3.amazonaws.com";
 
     public Trip createTripRecord(Trip trip){
         String bucketName = String.format(bucketNamePattern,
-                trip.getCountry(),
-                trip.getCity(),
+                trip.getCountry().toLowerCase(),
+                trip.getCity().toLowerCase(),
                 LocalDate.now().format(formatter),
                 100000 + new Random().nextInt(900000));
 
-        trip.setUrl(String.format(bucketUrlPattern,
-                S3Manager.s3Client.createBucket(bucketName).getName()));
+        trip.setUrl(String.format(bucketUrlPattern, getS3BucketName(bucketName)));
 
         return repository.save(trip);
+    }
+
+    private String getS3BucketName(String bucketName) {
+        final String localEnvironment = System.getenv("LOCAL_ENVIRONMENT");
+
+        if (localEnvironment != null && !localEnvironment.isEmpty()) {
+            return bucketName;
+        } else {
+            return S3Manager.s3Client.createBucket(bucketName).getName();
+        }
     }
 
     public List<Trip> getTripRecordsByPeriod(String start, String end){

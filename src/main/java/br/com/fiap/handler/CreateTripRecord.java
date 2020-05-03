@@ -7,7 +7,6 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.fiap.dao.TripRepository;
 import br.com.fiap.model.HandlerRequest;
 import br.com.fiap.model.HandlerResponse;
 import br.com.fiap.model.Trip;

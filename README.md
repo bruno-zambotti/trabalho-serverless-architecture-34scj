@@ -128,6 +128,8 @@ Algumas observações:
 #### Instalando o Maven
 `sudo apt install maven`
 
+`mvn --version`
+
 ### Subindo o banco de dados e a aplicação
 1. Iniciar o DynamoDB localmente com Docker. 
 `docker run -p 8000:8000 -v $(pwd)/local/dynamodb:/data/ amazon/dynamodb-local -jar DynamoDBLocal.jar -sharedDb -dbPath /data`
@@ -139,16 +141,22 @@ Algumas observações:
     
     2.1. Caso a tabela já exista, é possível exclui-la com o seguinte comando: `aws dynamodb delete-table --table-name trips --endpoint-url http://localhost:8000`
 
-3. Realize o clone deste repositório:
+3. Reptindo o procedimento de permissões agora para o dynamodb criado:
+`sudo chmod -R 777 local`
+
+4. Realize o clone deste repositório:
 `git clone https://github.com/bruno-zambotti/trabalho-serverless-architecture-34scj.git`
 
-4. Acesse a raiz do projeto:
-`cd serverless-trip`
+5. Acesse a raiz do projeto:
+`cd cd trabalho-serverless-architecture-34scj`
 
-5. Para iniciar o AWS SAM API localmente, informe o comando, conforme o seu sistema operacional:
+6. Realizando a compilação do projeto:
+`sudo mvn clean install`
+
+7. Para iniciar o AWS SAM API localmente, informe o comando, conforme o seu sistema operacional:
 `sam local start-api --env-vars src/test/resources/test_environment_linux.json`
 
-6. Para realizar requisições a função localmente através do API Gateway utilize os exemplos de comandos abaixo:
+8. Para realizar requisições a função localmente através do API Gateway utilize os exemplos de comandos abaixo:
 
 - Criação de uma viagem:
 >`curl --location --request POST 'http://localhost:3000/trips' \
@@ -209,25 +217,11 @@ sam deploy \
     --stack-name serverless-trip \
     --capabilities CAPABILITY_IAM
 ```
-- Windows (usando PowerShell):
-```
-sam deploy \
-    --template-file packaged.yaml \
-    --stack-name serverless-trip \
-    --capabilities CAPABILITY_IAM
-```
 
 Adicionalmente após a entrega ter siso concluída com sucesso execute o seguinte comando para obter o endpoint do API Gateway:
-- Linux ou MacOs:
 ```bash
 aws cloudformation describe-stacks \
-    --stack-name sam-tripsHandler \
-    --query 'Stacks[].Outputs'
-```
-- Windows (usando PowerShell):
-```
-aws cloudformation describe-stacks \
-    --stack-name sam-tripsHandler \
+    --stack-name serverless-trip \
     --query 'Stacks[].Outputs'
 ```
 

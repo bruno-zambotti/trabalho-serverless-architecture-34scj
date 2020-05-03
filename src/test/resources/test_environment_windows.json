@@ -1,14 +1,17 @@
 {
 	"CreateTripRecordFunction": {
 		"ENDPOINT_OVERRIDE": "http://docker.for.windows.localhost:8000",
+		"LOCAL_ENVIRONMENT": "TRUE",
 		"TABLE_NAME": "trips"
 	},
 	"GetTripRecordsByPeriodFunction": {
 		"ENDPOINT_OVERRIDE": "http://docker.for.windows.localhost:8000",
+		"LOCAL_ENVIRONMENT": "TRUE",
 		"TABLE_NAME": "trips"
 	},
 	"GetTripRecordByIdFunction": {
 		"ENDPOINT_OVERRIDE": "http://docker.for.windows.localhost:8000",
+		"LOCAL_ENVIRONMENT": "TRUE",
 		"TABLE_NAME": "trips"
 	}
 }

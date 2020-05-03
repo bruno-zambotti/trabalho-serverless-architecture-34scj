@@ -1,14 +1,17 @@
 {
 	"CreateTripRecordFunction": {
 		"ENDPOINT_OVERRIDE": "http://127.0.0.1:8000",
+		"LOCAL_ENVIRONMENT": "TRUE",
 		"TABLE_NAME": "trips"
 	},
 	"GetTripRecordsByPeriodFunction": {
 		"ENDPOINT_OVERRIDE": "http://127.0.0.1:8000",
+		"LOCAL_ENVIRONMENT": "TRUE",
 		"TABLE_NAME": "trips"
 	},
 	"GetTripRecordByIdFunction": {
 		"ENDPOINT_OVERRIDE": "http://127.0.0.1:8000",
+		"LOCAL_ENVIRONMENT": "TRUE",
 		"TABLE_NAME": "trips"
 	}
 }
