@@ -174,7 +174,7 @@ Algumas observações:
 9.1 Caso você execute um teste local em ambiente **linux** e receba o seguinte erro:
 `com.amazonaws.SdkClientException: Unable to execute HTTP request: Connect to 127.0.0.1:8000 [/127.0.0.1] failed: Connection refused (Connection refused)`
 
-Execute o comando `ifconfig` para listar a redes disponíveis em um terminal, serão exibidas algumas redes, localize a que esteja associada ao docker (no caso`docker0`).
+Execute o comando `ifconfig` para listar a redes disponíveis em um terminal, serão exibidas algumas redes, localize a que esteja associada ao docker (no caso `docker0`).
 Conforme exemplo abaixo: 
 ```
 docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
@@ -187,7 +187,7 @@ docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 ```
 Selecione o ip do host representado por `inet`, no caso `172.17.0.1`, e substitua pelo novo endereço no arquivo de configuração utilizado.
-![](attachments/generic/snippet-1.png)
+![](attachments/others/snippet-1.png)
 
 Após este procedimento, repita os passos 8 e 9.
 
@@ -272,9 +272,11 @@ Para testar os métodos da aplicação via Postman siga os passos a seguir:
 4. Após realizar a configuração descrita é só subir a aplicação e realizar as chamadas desejadas.
 
 ## Considerações finais
-1. Se você realizar a criação de uma nova viagem não informando o id explicitamente, o dynamodb se encarregará de criar um Universally Unique IDentifier (UUID) automaticamente.
+1. As evidências dos testes locais e via api gateway encontram-se neste [arquivo](../master/attachments/proofs/README.md).
 
-2. Não foi possível atribuir uma policy com as permissões necessárias para criação de buckets de forma genérica, pois os templates do AWS SAM somente preveem as seguintes [policies](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html):
+2. Se você realizar a criação de uma nova viagem não informando o id explicitamente, o dynamodb se encarregará de criar um Universally Unique IDentifier (UUID) automaticamente.
+
+3. Não foi possível atribuir uma policy com as permissões necessárias para criação de buckets de forma genérica, pois os templates do AWS SAM somente preveem as seguintes [policies](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html):
 > - [S3ReadPolicy](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-read-policy)
 > - [S3WritePolicy](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-write-policy)
 > - [S3CrudPolicy](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-crud-policy)
