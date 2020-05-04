@@ -250,7 +250,9 @@ Para testar os métodos da aplicação via Postman siga os passos a seguir:
 4. Após realizar a configuração descrita é só subir a aplicação e realizar as chamadas desejadas.
 
 ## Considerações finais
-Não foi possível atribuir uma policy com as permissões necessárias para criação de buckets de forma genérica, pois os templates do AWS SAM somente preveem as seguintes [policies](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html):
+- Se você realizar a criação de uma nova viagem não informando o id explicitamente, o dynamodb se encarregará de criar um Universally Unique IDentifier (UUID) automaticamente.
+
+- Não foi possível atribuir uma policy com as permissões necessárias para criação de buckets de forma genérica, pois os templates do AWS SAM somente preveem as seguintes [policies](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html):
 - [S3ReadPolicy](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-read-policy)
 - [S3WritePolicy](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-write-policy)
 - [S3CrudPolicy](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-crud-policy)

@@ -3,14 +3,12 @@ package br.com.fiap.dao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import br.com.fiap.model.Trip;
-import br.com.fiap.utils.S3Manager;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.s3.model.Bucket;
 
 public class TripsRepository {
 
@@ -27,11 +25,11 @@ public class TripsRepository {
 		eav.put(":val1", new AttributeValue().withS(starts));
 		eav.put(":val2", new AttributeValue().withS(ends));
 
-		final DynamoDBQueryExpression<Trip> queryExpression = new DynamoDBQueryExpression<Trip>()
-				.withKeyConditionExpression("dateTimeCreation between :val1 and :val2")
+		final DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+				.withFilterExpression("dateTimeCreation between :val1 and :val2")
 				.withExpressionAttributeValues(eav);
 
-		return  mapper.query(Trip.class, queryExpression);
+		return  mapper.scan(Trip.class, scanExpression);
 	}
 
 	public List<Trip> findById(final String id) {
