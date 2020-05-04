@@ -133,26 +133,26 @@ Algumas observações:
 2. Permitindo o acesso aos diretórios que serão utilizados para subir o dynamodb:
 `sudo chmod -R 777 local`
 
-2. Realizar a criação da tabela no DynamoDB. `aws dynamodb create-table --table-name trips --attribute-definitions AttributeName=id,AttributeType=S AttributeName=dateTimeCreation,AttributeType=S --key-schema AttributeName=id,KeyType=HASH AttributeName=dateTimeCreation,KeyType=RANGE --billing-mode PAY_PER_REQUEST --endpoint-url http://localhost:8000`
+3. Realizar a criação da tabela no DynamoDB. `aws dynamodb create-table --table-name trips --attribute-definitions AttributeName=id,AttributeType=S AttributeName=dateTimeCreation,AttributeType=S --key-schema AttributeName=id,KeyType=HASH AttributeName=dateTimeCreation,KeyType=RANGE --billing-mode PAY_PER_REQUEST --endpoint-url http://localhost:8000`
     
     2.1. Caso a tabela já exista, é possível exclui-la com o seguinte comando: `aws dynamodb delete-table --table-name trips --endpoint-url http://localhost:8000`
 
-3. Reptindo o procedimento de permissões agora para o dynamodb criado:
+4. Reptindo o procedimento de permissões agora para o dynamodb criado:
 `sudo chmod -R 777 local`
 
-4. Realize o clone deste repositório:
+5. Realize o clone deste repositório:
 `git clone https://github.com/bruno-zambotti/trabalho-serverless-architecture-34scj.git`
 
-5. Acesse a raiz do projeto:
+6. Acesse a raiz do projeto:
 `cd cd trabalho-serverless-architecture-34scj`
 
-6. Realizando a compilação do projeto:
+7. Realizando a compilação do projeto:
 `sudo mvn clean install`
 
-7. Para iniciar o AWS SAM API localmente, informe o comando, conforme o seu sistema operacional:
+8. Para iniciar o AWS SAM API localmente, informe o comando, conforme o seu sistema operacional:
 `sam local start-api --env-vars src/test/resources/test_environment_linux.json`
 
-8. Para realizar requisições a função localmente através do API Gateway utilize os exemplos de comandos abaixo:
+9. Para realizar requisições a função localmente através do API Gateway utilize os exemplos de comandos abaixo:
 
 - Criação de uma viagem:
 >`curl --location --request POST 'http://localhost:3000/trips' \
@@ -170,6 +170,28 @@ Algumas observações:
 
 - Consulta de viagens por período:
 >`curl --location --request GET 'http://localhost:3000/trips?start=2020-05-01&end=2020-05-05'`
+
+9.1 Caso você execute um teste local em ambiente **linux** e receba o seguinte erro:
+`com.amazonaws.SdkClientException: Unable to execute HTTP request: Connect to 127.0.0.1:8000 [/127.0.0.1] failed: Connection refused (Connection refused)`
+
+Execute o comando `ifconfig` para listar a redes disponíveis em um terminal, serão exibidas algumas redes, localize a que esteja associada ao docker (no caso`docker0`).
+Conforme exemplo abaixo: 
+```
+docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+        inet6 fe80::42:e4ff:fec0:771b  prefixlen 64  scopeid 0x20<link>
+        ether 02:42:e4:c0:77:1b  txqueuelen 0  (Ethernet)
+        RX packets 21  bytes 2549 (2.5 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 56  bytes 8385 (8.3 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
+Selecione o ip do host representado por `inet`, no caso `172.17.0.1`, e substitua pelo novo endereço no arquivo de configuração utilizado.
+![](attachments/generic/snippet-1.png)
+
+Após este procedimento, repita os passos 8 e 9.
+
+Observação: O problema ocorre devido conflitos de interface de rede, segue um [link relacionado](https://pythonspeed.com/articles/docker-connection-refused/), que pode ajudá-lo a chegar em outras soluções.
 
 ## Deploy
 
@@ -250,17 +272,17 @@ Para testar os métodos da aplicação via Postman siga os passos a seguir:
 4. Após realizar a configuração descrita é só subir a aplicação e realizar as chamadas desejadas.
 
 ## Considerações finais
-- Se você realizar a criação de uma nova viagem não informando o id explicitamente, o dynamodb se encarregará de criar um Universally Unique IDentifier (UUID) automaticamente.
+1. Se você realizar a criação de uma nova viagem não informando o id explicitamente, o dynamodb se encarregará de criar um Universally Unique IDentifier (UUID) automaticamente.
 
-- Não foi possível atribuir uma policy com as permissões necessárias para criação de buckets de forma genérica, pois os templates do AWS SAM somente preveem as seguintes [policies](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html):
-- [S3ReadPolicy](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-read-policy)
-- [S3WritePolicy](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-write-policy)
-- [S3CrudPolicy](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-crud-policy)
-- [S3FullAccessPolicy](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-full-access-policy)
+2. Não foi possível atribuir uma policy com as permissões necessárias para criação de buckets de forma genérica, pois os templates do AWS SAM somente preveem as seguintes [policies](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html):
+> - [S3ReadPolicy](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-read-policy)
+> - [S3WritePolicy](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-write-policy)
+> - [S3CrudPolicy](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-crud-policy)
+> - [S3FullAccessPolicy](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-full-access-policy)
 
 Sendo que as voltadas ao S3 não possuem a action necessária `s3:CreateBucket` para permitir que a lambda crie os buckets da forma que foi solicitada no trabalho. Todas elas já partem da premissa de que o bucket esteja criado.
 
-Algumas tentativas de permitir o acesso ao S3 foram testadas, conforme descrito abaixo:
+Algumas outras tentativas de permitir o acesso ao S3 foram testadas, algumas delas descrevo abaixo:
 - Criação de role e policy personalizada com os seguintes comandos e templates:
 ```bash
 aws iam create-role --role-name TripRole --assume-role-policy-document file://trip-role.json
