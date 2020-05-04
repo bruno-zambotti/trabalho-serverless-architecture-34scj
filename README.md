@@ -220,7 +220,7 @@ aws cloudformation describe-stacks \
     --query 'Stacks[].Outputs'
 ```
 
-Para remover todos os artefatos criados e limpar a workspace do Cloud9, execute os seguitnes comandos:
+Para remover todos os artefatos criados e limpar a workspace do Cloud9, execute os seguintes comandos:
 `aws s3 rb s3://$BUCKET_NAME --force` 
 
 `aws cloudformation delete-stack --stack-name serverless-trip`

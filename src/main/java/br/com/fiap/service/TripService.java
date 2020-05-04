@@ -1,6 +1,6 @@
 package br.com.fiap.service;
 
-import br.com.fiap.dao.TripRepository;
+import br.com.fiap.dao.TripsRepository;
 import br.com.fiap.model.Trip;
 import br.com.fiap.utils.S3Manager;
 
