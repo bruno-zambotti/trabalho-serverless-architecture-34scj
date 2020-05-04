@@ -29,19 +29,16 @@ Desenvolver uma API seguindo as melhores práticas do conjunto de princípios da
 
 - RF2 - Permitir a criação de um novo registro de viagem:
 > - Retornar no header da resposta o HTTP Status Code 201 - Created.
-> - Retornar no body da resposta o id da Trip e uma url de
-um bucket (Amazon S3) que será utilizado para posteriormente
-subir as fotos da viagem. O nome do bucket deve ser gerado com a
-seguinte sintaxe: ```<trip-country>-<trip-city>-<date>-<6-digit-random-number>```
+> - Retornar no body da resposta o id da Trip e uma url de um bucket (Amazon S3) que será utilizado para posteriormente subir as fotos da viagem. O nome do bucket deve ser gerado com a seguinte sintaxe: ```<trip-country>-<trip-city>-<date>-<6-digit-random-number>```
 
 - RF3 - Permitir a busca de dados das viagens realizadas por período:
-> - Na requição o período deverá ser recebido via query parameter: ```/trips?start=YYYY-MM-DD&end=YYYY-MM-DD```
+> - Na requisição o período deverá ser recebido via query parameter: ```/trips?start=YYYY-MM-DD&end=YYYY-MM-DD```
 > - Retornar no header da resposta o HTTP Status Code 200 - OK.
 > - Retornar no body da resposta uma lista contendo os resultados (todos os campos da entidade).
 > - Em caso de não retornar resultados para os parâmetros informados, retornar uma lista vazia, mantendo o HTTP Status Code 200 - OK.
 
 - RF4 - Permitir a busca de dados de uma viagem por id.
-> - Na requição o período deverá ser recebido via path parameter: ```/trips/{id}```
+> - Na requisição o período deverá ser recebido via path parameter: ```/trips/{id}```
 > - Retornar somente os dados da viagem referente ao id informado.
 > - Caso os registros da viagem sejam encontrados, deverá ser retornado o HTTP Status Code 200 - OK e no body da resposta os dados da viagem.
 > - Caso os registros da viagem não sejam encontrados, deverá ser retornado o HTTP Status Code 404 - Not Found, e o body da resposta como vazio.
@@ -52,9 +49,6 @@ seguinte sintaxe: ```<trip-country>-<trip-city>-<date>-<6-digit-random-number>``
 - RNF2 - A aplicação deve ser capaz de ser executada com a Stack completa localmente.
 
 - RNF3 - Deverá ser possível implantar a aplicação na AWS através dos comandos do AWS SAM.
-
-## Exemplo de Funcionamento
-![](example.gif)
 
 ## Funcionalidades:
 
@@ -90,9 +84,11 @@ Deverá ser realizada conforme o sistema operacional utilizado, para mais inform
 
 ## Execução local utilizando o Cloud9
 
-Abaixo é representado o passo a passo para configuração e execução utilizando o Cloud9:
+Abaixo é representado o passo a passo para configuração do ambiente utilizando o Cloud9:
 
 ### Configuração do ambiente
+
+Se é a primeira vez que você utiliza o Cloud9, favor seguir os passos descritos neste [anexo](../master/attachments/setup-cloud9/README.md).
 
 Algumas observações:
 - Java 8 já vem instalado
@@ -217,12 +213,21 @@ sam deploy \
     --capabilities CAPABILITY_IAM
 ```
 
-Adicionalmente após a entrega ter siso concluída com sucesso execute o seguinte comando para obter o endpoint do API Gateway:
+Adicionalmente após a entrega ter sido concluída com sucesso execute o seguinte comando para obter o endpoint do API Gateway:
 ```bash
 aws cloudformation describe-stacks \
     --stack-name serverless-trip \
     --query 'Stacks[].Outputs'
 ```
+
+Para remover todos os artefatos criados e limpar a workspace do Cloud9, execute os seguitnes comandos:
+`aws s3 rb s3://$BUCKET_NAME --force` 
+
+`aws cloudformation delete-stack --stack-name serverless-trip`
+
+`sudo rm -rf trabalho-serverless-architecture-34scj`
+
+`sudo rm -rf local`
 
 ## Outras informações
 
@@ -243,6 +248,40 @@ Para testar os métodos da aplicação via Postman siga os passos a seguir:
     3.5. Por fim, escolha o arquivo [***"serverless_trips_service.postman_collection.json"***](../master/src/test/resources/serverless_trips_service.postman_collection.json).
 
 4. Após realizar a configuração descrita é só subir a aplicação e realizar as chamadas desejadas.
+
+## Considerações finais
+Não foi possível atribuir uma policy com as permissões necessárias para criação de buckets de forma genérica, pois os templates do AWS SAM somente preveem as seguintes [policies](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html):
+- [S3ReadPolicy](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-read-policy)
+- [S3WritePolicy](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-write-policy)
+- [S3CrudPolicy](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-crud-policy)
+- [S3FullAccessPolicy](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-full-access-policy)
+
+Sendo que as voltadas ao S3 não possuem a action necessária `s3:CreateBucket` para permitir que a lambda crie os buckets da forma que foi solicitada no trabalho. Todas elas já partem da premissa de que o bucket esteja criado.
+
+Algumas tentativas de permitir o acesso ao S3 foram testadas, conforme descrito abaixo:
+- Criação de role e policy personalizada com os seguintes comandos e templates:
+```bash
+aws iam create-role --role-name TripRole --assume-role-policy-document file://trip-role.json
+```
+```bash
+aws iam create-policy --policy-name TripPolicy --policy-document file://trip-policy.json
+```
+```bash
+aws iam attach-role-policy --policy-arn arn:aws:iam::060631834257:policy/TripPolicy --role-name TripRole
+```
+```bash
+aws iam attach-role-policy --role-name TripRole --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+```
+Ainda houve uma tentativa de associar a Role `AmazonS3FullAccess` a policy da lambda:
+```bash
+aws iam attach-role-policy --role-name TripRole --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess
+```
+```bash
+aws iam attach-role-policy --role-name TripRole --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+```
+
+Logo para não deixar a aplicação não funcional no ambiente, optei por fazer uma adaptação realizando essa [configuração de policy manualmente](../master/attachments/manual-policy/README.md).
+
 
 ## Links:
 

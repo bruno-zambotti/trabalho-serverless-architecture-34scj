@@ -12,7 +12,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.s3.model.Bucket;
 
-public class TripRepository {
+public class TripsRepository {
 
 	private static final DynamoDBMapper mapper = DynamoDBManager.mapper();
 

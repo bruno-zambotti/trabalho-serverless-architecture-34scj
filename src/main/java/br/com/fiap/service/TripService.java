@@ -11,7 +11,7 @@ import java.util.Random;
 
 public class TripService {
 
-    private final TripRepository repository = new TripRepository();
+    private final TripsRepository repository = new TripsRepository();
     private static final String bucketNamePattern = "%s-%s-%s-%s";
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private static final String bucketUrlPattern = "https://%s.s3.amazonaws.com";
